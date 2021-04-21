@@ -4,6 +4,10 @@
 ````
 npm install
 ````
+## Build 
+````
+npm run dev:build-server
+````
 ## Run 
 ````
 npm run dev
