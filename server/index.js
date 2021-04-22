@@ -74,14 +74,26 @@ function common( req, res )
 //####################################################
 //# ROUTES
 //####################################################
-app.get('/', (req, res) => {
-    common( req, res );
-});
-app.get('/auth', (req, res) => {
-    common( req, res );
-});
-app.get('/app', (req, res) => {
-    common( req, res );
+app.get('/*', (req, res) => {
+    const context = {};
+    const app = ReactDOMServer.renderToString(
+        <StaticRouter location={req.url} context={context}>
+            <App />
+        </StaticRouter>
+    );
+
+    const indexFile = path.resolve('./build/index.html');
+    const errMsg = 'Something went wrong';
+    fs.readFile(indexFile, 'utf8', (err, data) => {
+        if (err) {
+            console.error( errMsg + ':', err);
+            return res.status(500).send(errMsg);
+        }
+
+        return res.send(
+            data.replace('<div id="root"></div>', `<div id="root">${app}</div>`)
+        );
+    });
 });
 
 
